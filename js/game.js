@@ -159,43 +159,65 @@ export class Game {
     }
 
     setupInputs() {
-        // Need to capture 'this' for the closure
         const self = this;
+
+        // Disable browser handling of gestures
+        this.canvas.style.touchAction = 'none';
+
+        // Touch guard to prevent double-firing mouse events
+        let isTouchActive = false;
+
+        const getLogicX = (clientX) => {
+            const rect = self.canvas.getBoundingClientRect();
+            const logicW = self.actualWidth || CONFIG.CANVAS_WIDTH;
+
+            // Calculate relative position 0.0 to 1.0
+            let ratio = (clientX - rect.left) / rect.width;
+
+            // Clamp to screen bounds to avoid jumps
+            ratio = Math.max(0, Math.min(ratio, 1));
+
+            // Map to game logical width
+            return ratio * logicW;
+        };
 
         const updateLauncher = (clientX) => {
             if (self.gameOver) return;
 
-            const rect = self.canvas.getBoundingClientRect();
-
-            // Use Logical Width for calculations (avoid high-DPI doubling)
-            const logicalWidth = self.actualWidth || CONFIG.CANVAS_WIDTH;
-
-            // Calculate scale relative to displayed size vs logical size
-            const scaleX = logicalWidth / rect.width;
-
-            // Map clientX to Logical Physics Coordinates
-            const relX = (clientX - rect.left) * scaleX;
-
+            const relX = getLogicX(clientX);
             const currentRadius = VEGETABLES[self.currentVegIndex].radius;
+            const logicW = self.actualWidth || CONFIG.CANVAS_WIDTH;
 
-            // Constraint within logical width
-            self.launcherX = Math.max(currentRadius + CONFIG.WALL_THICKNESS, Math.min(relX, logicalWidth - currentRadius - CONFIG.WALL_THICKNESS));
+            self.launcherX = Math.max(currentRadius + CONFIG.WALL_THICKNESS, Math.min(relX, logicW - currentRadius - CONFIG.WALL_THICKNESS));
         };
 
         const tryShoot = () => {
-            if (this.gameOver || !this.canShoot) return;
-            this.shoot();
+            if (self.gameOver || !self.canShoot) return;
+            self.shoot();
         };
 
-        // Desktop
-        this.canvas.addEventListener('mousemove', (e) => updateLauncher(e.clientX));
-        this.canvas.addEventListener('mouseup', tryShoot);
-        this.canvas.addEventListener('mousedown', (e) => updateLauncher(e.clientX));
+        // Desktop (guarded)
+        const handleMouse = (e) => {
+            if (isTouchActive) return; // Ignore if using touch
+            updateLauncher(e.clientX);
+        };
+
+        const handleMouseClick = (e) => {
+            if (isTouchActive) return;
+            tryShoot();
+        };
+
+        this.canvas.addEventListener('mousemove', handleMouse);
+        this.canvas.addEventListener('mousedown', handleMouse);
+        this.canvas.addEventListener('mouseup', handleMouseClick);
 
         // Touch
         const handleTouch = (e) => {
-            e.preventDefault(); // Prevent scrolling
-            updateLauncher(e.touches[0].clientX);
+            isTouchActive = true;
+            e.preventDefault(); // Extra safety
+            if (e.touches && e.touches[0]) {
+                updateLauncher(e.touches[0].clientX);
+            }
         };
 
         this.canvas.addEventListener('touchstart', handleTouch, { passive: false });
@@ -204,6 +226,8 @@ export class Game {
         this.canvas.addEventListener('touchend', (e) => {
             e.preventDefault();
             tryShoot();
+            // Reset guard after defined delay if needed, or keep true if exclusively touch
+            setTimeout(() => { isTouchActive = false; }, 500);
         });
     }
 
