@@ -213,8 +213,9 @@ export class Game {
         this.soundManager.playShoot();
 
         // Use dynamic launcher Y based on actual canvas height
+        // Move up significantly to fit large vegetables (Radius ~Max 80)
         const h = this.actualHeight || CONFIG.CANVAS_HEIGHT;
-        const launcherY = h - 50; // 50px from bottom of visible area
+        const launcherY = h - 150;
 
         const veg = createVegetable(this.launcherX, launcherY, this.currentVegIndex);
         Matter.Body.setVelocity(veg, { x: 0, y: -15 });
@@ -507,7 +508,7 @@ export class Game {
 
         // Dynamic positions based on actual canvas size
         const dangerLineY = h * 0.75; // 75% from top
-        const launcherY = h - 50;     // 50px from bottom
+        const launcherY = h - 150;    // Match shoot() position
 
         // Draw Danger Line
         ctx.beginPath();
