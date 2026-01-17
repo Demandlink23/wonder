@@ -159,21 +159,27 @@ export class Game {
     }
 
     setupInputs() {
+        // Need to capture 'this' for the closure
+        const self = this;
+
         const updateLauncher = (clientX) => {
-            if (this.gameOver) return;
+            if (self.gameOver) return;
 
-            const rect = this.canvas.getBoundingClientRect();
-            // Calculate scale in case canvas is resized by CSS
-            const scaleX = this.canvas.width / rect.width;
+            const rect = self.canvas.getBoundingClientRect();
 
-            // Map clientX to canvas coordinates
+            // Use Logical Width for calculations (avoid high-DPI doubling)
+            const logicalWidth = self.actualWidth || CONFIG.CANVAS_WIDTH;
+
+            // Calculate scale relative to displayed size vs logical size
+            const scaleX = logicalWidth / rect.width;
+
+            // Map clientX to Logical Physics Coordinates
             const relX = (clientX - rect.left) * scaleX;
 
-            const currentRadius = VEGETABLES[this.currentVegIndex].radius;
-            // Use internal canvas width for constraints
-            const w = this.canvas.width;
+            const currentRadius = VEGETABLES[self.currentVegIndex].radius;
 
-            this.launcherX = Math.max(currentRadius + CONFIG.WALL_THICKNESS, Math.min(relX, w - currentRadius - CONFIG.WALL_THICKNESS));
+            // Constraint within logical width
+            self.launcherX = Math.max(currentRadius + CONFIG.WALL_THICKNESS, Math.min(relX, logicalWidth - currentRadius - CONFIG.WALL_THICKNESS));
         };
 
         const tryShoot = () => {
