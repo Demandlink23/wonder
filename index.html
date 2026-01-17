@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Reverse Wonder Vegetable</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Matter.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+</head>
+
+<body>
+    <div id="game-container">
+        <!-- New Header Section -->
+        <div id="evolution-header">
+
+            <div class="evolution-guide">
+                <!-- Will be populated by JS or static HTML -->
+                <div class="evo-item"><img src="assets/corn.png"><span></span></div>
+                <div class="arrow">→</div>
+                <div class="evo-item"><img src="assets/bean.png"><span></span></div>
+                <div class="arrow">→</div>
+                <div class="evo-item"><img src="assets/chestnut.png"><span></span></div>
+                <div class="arrow">→</div>
+                <div class="evo-item"><img src="assets/eggplant.png"><span></span></div>
+                <div class="arrow">→</div>
+                <div class="evo-item"><img src="assets/carrot.png"><span></span></div>
+                <div class="arrow">→</div>
+                <!-- Show first 5 for space, or marquee? Let's fit them or scroll -->
+                <!-- Let's use JS to populate cleaner -->
+            </div>
+        </div>
+
+
+
+        <!-- NEW: Status Bar (Score & Next Preview) -->
+        <div id="game-status-bar">
+            <div class="status-left">
+                <div id="score-board">
+                    <span>SCORE</span>
+                    <span id="score">0</span>
+                </div>
+            </div>
+
+            <div class="status-center">
+                <!-- Audio Toggle can go here or floating -->
+                <div class="squid-mascot">
+                    <img src="assets/squid.png" alt="Squid Mascot">
+                </div>
+                <!-- Audio Toggle below or beside? Let's make squid clickable for audio maybe? or keep audio separate -->
+            </div>
+
+            <div class="status-right">
+                <div class="next-label">NEXT</div>
+                <div id="next-preview-container">
+                    <img id="next-veg-img" src="" alt="Next">
+                </div>
+            </div>
+        </div>
+
+        <canvas id="game-canvas"></canvas>
+        <div id="ui-layer">
+            <!-- HUD moved to status bar, only Game Over remains overlay -->
+
+
+            <div id="game-over" class="hidden">
+                <h1>Game Over</h1>
+                <p>Vegetables overflowed!</p>
+                <div class="score-summary">Final Score: <span id="final-score">0</span></div>
+                <button id="restart-btn">Try Again</button>
+            </div>
+        </div>
+        <script type="module" src="js/main.js"></script>
+</body>
+
+</html>
