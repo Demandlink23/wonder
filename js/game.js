@@ -48,18 +48,36 @@ export class Game {
     init() {
         const { Engine, Render, Runner, World, Events } = Matter;
 
+        // Get actual canvas container size
+        const container = document.getElementById('game-container');
+        const header = document.getElementById('evolution-header');
+        const statusBar = document.getElementById('game-status-bar');
+
+        const headerHeight = header ? header.offsetHeight : 0;
+        const statusHeight = statusBar ? statusBar.offsetHeight : 0;
+        const availableHeight = window.innerHeight - headerHeight - statusHeight;
+        const availableWidth = container ? container.offsetWidth : window.innerWidth;
+
+        // Use actual available dimensions
+        this.actualWidth = availableWidth;
+        this.actualHeight = availableHeight;
+
+        // Scale factor for physics coordinates
+        this.scaleX = this.actualWidth / CONFIG.CANVAS_WIDTH;
+        this.scaleY = this.actualHeight / CONFIG.CANVAS_HEIGHT;
+
         // Create engine with Reverse Gravity (adjusted by stage)
         this.engine = Engine.create();
         const stage = STAGES[this.currentStage];
         this.engine.world.gravity.y = CONFIG.GRAVITY_Y * stage.gravityMultiplier;
 
-        // Create renderer
+        // Create renderer with ACTUAL dimensions
         this.render = Render.create({
             canvas: this.canvas,
             engine: this.engine,
             options: {
-                width: CONFIG.CANVAS_WIDTH,
-                height: CONFIG.CANVAS_HEIGHT,
+                width: this.actualWidth,
+                height: this.actualHeight,
                 wireframes: false,
                 background: '#fff8dc'
             }
@@ -100,10 +118,14 @@ export class Game {
             friction: 0.5
         };
 
-        const ceiling = Bodies.rectangle(CONFIG.CANVAS_WIDTH / 2, -10, CONFIG.CANVAS_WIDTH, CONFIG.WALL_THICKNESS * 2, wallOptions);
-        const leftWall = Bodies.rectangle(-10, CONFIG.CANVAS_HEIGHT / 2, CONFIG.WALL_THICKNESS * 2, CONFIG.CANVAS_HEIGHT * 2, wallOptions);
-        const rightWall = Bodies.rectangle(CONFIG.CANVAS_WIDTH + 10, CONFIG.CANVAS_HEIGHT / 2, CONFIG.WALL_THICKNESS * 2, CONFIG.CANVAS_HEIGHT * 2, wallOptions);
-        const floor = Bodies.rectangle(CONFIG.CANVAS_WIDTH / 2, CONFIG.CANVAS_HEIGHT + 100, CONFIG.CANVAS_WIDTH, 50, wallOptions);
+        // Use actual canvas dimensions instead of config
+        const w = this.actualWidth || CONFIG.CANVAS_WIDTH;
+        const h = this.actualHeight || CONFIG.CANVAS_HEIGHT;
+
+        const ceiling = Bodies.rectangle(w / 2, -10, w, CONFIG.WALL_THICKNESS * 2, wallOptions);
+        const leftWall = Bodies.rectangle(-10, h / 2, CONFIG.WALL_THICKNESS * 2, h * 2, wallOptions);
+        const rightWall = Bodies.rectangle(w + 10, h / 2, CONFIG.WALL_THICKNESS * 2, h * 2, wallOptions);
+        const floor = Bodies.rectangle(w / 2, h + 100, w, 50, wallOptions);
 
         this.walls = [ceiling, leftWall, rightWall, floor];
         Composite.add(this.engine.world, this.walls);
@@ -139,11 +161,19 @@ export class Game {
     setupInputs() {
         const updateLauncher = (clientX) => {
             if (this.gameOver) return;
+
             const rect = this.canvas.getBoundingClientRect();
-            const relX = clientX - rect.left;
+            // Calculate scale in case canvas is resized by CSS
+            const scaleX = this.canvas.width / rect.width;
+
+            // Map clientX to canvas coordinates
+            const relX = (clientX - rect.left) * scaleX;
 
             const currentRadius = VEGETABLES[this.currentVegIndex].radius;
-            this.launcherX = Math.max(currentRadius + CONFIG.WALL_THICKNESS, Math.min(relX, CONFIG.CANVAS_WIDTH - currentRadius - CONFIG.WALL_THICKNESS));
+            // Use internal canvas width for constraints
+            const w = this.canvas.width;
+
+            this.launcherX = Math.max(currentRadius + CONFIG.WALL_THICKNESS, Math.min(relX, w - currentRadius - CONFIG.WALL_THICKNESS));
         };
 
         const tryShoot = () => {
@@ -154,12 +184,16 @@ export class Game {
         // Desktop
         this.canvas.addEventListener('mousemove', (e) => updateLauncher(e.clientX));
         this.canvas.addEventListener('mouseup', tryShoot);
+        this.canvas.addEventListener('mousedown', (e) => updateLauncher(e.clientX));
 
         // Touch
-        this.canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
+        const handleTouch = (e) => {
+            e.preventDefault(); // Prevent scrolling
             updateLauncher(e.touches[0].clientX);
-        }, { passive: false });
+        };
+
+        this.canvas.addEventListener('touchstart', handleTouch, { passive: false });
+        this.canvas.addEventListener('touchmove', handleTouch, { passive: false });
 
         this.canvas.addEventListener('touchend', (e) => {
             e.preventDefault();
@@ -172,7 +206,11 @@ export class Game {
         this.isShooting = true;
         this.soundManager.playShoot();
 
-        const veg = createVegetable(this.launcherX, CONFIG.LAUNCHER_Y, this.currentVegIndex);
+        // Use dynamic launcher Y based on actual canvas height
+        const h = this.actualHeight || CONFIG.CANVAS_HEIGHT;
+        const launcherY = h - 50; // 50px from bottom of visible area
+
+        const veg = createVegetable(this.launcherX, launcherY, this.currentVegIndex);
         Matter.Body.setVelocity(veg, { x: 0, y: -15 });
 
         Matter.Composite.add(this.engine.world, veg);
@@ -458,11 +496,17 @@ export class Game {
 
     afterRender() {
         const ctx = this.render.context;
+        const w = this.actualWidth || CONFIG.CANVAS_WIDTH;
+        const h = this.actualHeight || CONFIG.CANVAS_HEIGHT;
+
+        // Dynamic positions based on actual canvas size
+        const dangerLineY = h * 0.75; // 75% from top
+        const launcherY = h - 50;     // 50px from bottom
 
         // Draw Danger Line
         ctx.beginPath();
-        ctx.moveTo(0, CONFIG.DANGER_LINE_Y);
-        ctx.lineTo(CONFIG.CANVAS_WIDTH, CONFIG.DANGER_LINE_Y);
+        ctx.moveTo(0, dangerLineY);
+        ctx.lineTo(w, dangerLineY);
         ctx.strokeStyle = 'red';
         ctx.setLineDash([10, 10]);
         ctx.stroke();
@@ -476,14 +520,14 @@ export class Game {
 
             // Draw guideline
             ctx.beginPath();
-            ctx.moveTo(this.launcherX, CONFIG.LAUNCHER_Y);
+            ctx.moveTo(this.launcherX, launcherY);
             ctx.lineTo(this.launcherX, 0);
             ctx.strokeStyle = 'rgba(0,0,0,0.2)';
             ctx.stroke();
 
             // Draw Image with Clipping
             ctx.save();
-            ctx.translate(this.launcherX, CONFIG.LAUNCHER_Y);
+            ctx.translate(this.launcherX, launcherY);
 
             ctx.beginPath();
             ctx.arc(0, 0, currentVeg.radius, 0, 2 * Math.PI);
