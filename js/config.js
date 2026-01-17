@@ -5,8 +5,8 @@ export const CONFIG = {
     FRICTION: 0.5,
     BOUNCINESS: 0.1,
     GRAVITY_Y: -1,
-    DANGER_LINE_Y: 650,
-    LAUNCHER_Y: 720,  // Moved up from 750 for better visibility on tablets
+    DANGER_LINE_Y: 600,   // Moved up from 650
+    LAUNCHER_Y: 680,      // Moved up from 720 for better visibility
 };
 
 // Stage definitions with difficulty
