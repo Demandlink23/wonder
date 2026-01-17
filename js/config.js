@@ -66,14 +66,14 @@ export const STAGES = [
 ];
 
 export const VEGETABLES = [
-    { name: 'corn', radius: 15, score: 10, img: 'assets/corn.png' },
-    { name: 'bean', radius: 25, score: 20, img: 'assets/bean.png' },
-    { name: 'chestnut', radius: 35, score: 30, img: 'assets/chestnut.png' },
-    { name: 'eggplant', radius: 45, score: 40, img: 'assets/eggplant.png' },
-    { name: 'carrot', radius: 55, score: 50, img: 'assets/carrot.png' },
-    { name: 'cucumber', radius: 65, score: 60, img: 'assets/cucumber.png' },
-    { name: 'cabbage', radius: 75, score: 70, img: 'assets/cabbage.png' },
-    { name: 'lettuce', radius: 85, score: 80, img: 'assets/lettuce.png' },
-    { name: 'napa', radius: 95, score: 90, img: 'assets/napa.png' },
-    { name: 'pumpkin', radius: 110, score: 100, img: 'assets/pumpkin.png' }
+    { name: 'corn', radius: 20, score: 10, img: 'assets/corn.png' },
+    { name: 'bean', radius: 30, score: 20, img: 'assets/bean.png' },
+    { name: 'chestnut', radius: 40, score: 30, img: 'assets/chestnut.png' },
+    { name: 'eggplant', radius: 50, score: 40, img: 'assets/eggplant.png' },
+    { name: 'carrot', radius: 60, score: 50, img: 'assets/carrot.png' },
+    { name: 'cucumber', radius: 70, score: 60, img: 'assets/cucumber.png' },
+    { name: 'cabbage', radius: 80, score: 70, img: 'assets/cabbage.png' },
+    { name: 'lettuce', radius: 95, score: 80, img: 'assets/lettuce.png' },
+    { name: 'napa', radius: 110, score: 90, img: 'assets/napa.png' },
+    { name: 'pumpkin', radius: 130, score: 100, img: 'assets/pumpkin.png' }
 ];

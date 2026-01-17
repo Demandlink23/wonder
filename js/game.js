@@ -107,7 +107,106 @@ export class Game {
         this.prepareNextVegetable();
 
         // Show stage 1 start message
+        // Show stage 1 start message
         this.showStageStartMessage();
+
+        // --- SKILL: SHAKE ---
+        this.shakeBtn = document.getElementById('shake-btn');
+        this.shakeCooldown = false;
+        if (this.shakeBtn) {
+            this.shakeBtn.disabled = false; // Enable initially
+            this.shakeBtn.addEventListener('click', (e) => {
+                // Prevent click passing to canvas
+                e.stopPropagation();
+                this.useShakeSkill();
+            });
+            // Prevent touch on button triggering canvas
+            this.shakeBtn.addEventListener('touchstart', (e) => e.stopPropagation());
+        }
+
+        // --- COMBO SYSTEM ---
+        this.comboCount = 0;
+        this.lastMergeTime = 0;
+        this.comboTimer = null;
+    }
+
+    useShakeSkill() {
+        if (this.shakeCooldown || this.gameOver) return;
+
+        // Apply random force to all bodies
+        const bodies = Matter.Composite.allBodies(this.engine.world);
+        bodies.forEach(body => {
+            if (!body.isStatic) {
+                const forceMagnitude = 0.05 * body.mass;
+                Matter.Body.applyForce(body, body.position, {
+                    x: (Math.random() - 0.5) * forceMagnitude,
+                    y: -forceMagnitude // Upward pop
+                });
+            }
+        });
+
+        // Start Cooldown (30s)
+        this.shakeCooldown = true;
+        this.shakeBtn.disabled = true;
+        const cooldownTime = 30000;
+        const startTime = Date.now();
+        const overlay = this.shakeBtn.querySelector('.cooldown-overlay');
+
+        // Visual Cooldown
+        const interval = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            const remaining = Math.max(0, cooldownTime - elapsed);
+            const percent = (remaining / cooldownTime) * 100;
+
+            if (overlay) overlay.style.height = `${percent}%`;
+
+            if (remaining <= 0) {
+                clearInterval(interval);
+                this.shakeCooldown = false;
+                this.shakeBtn.disabled = false;
+                if (overlay) overlay.style.height = '0%';
+            }
+        }, 100);
+    }
+
+    triggerCombo() {
+        const now = Date.now();
+        // If less than 1.5s since last merge, increment combo
+        if (now - this.lastMergeTime < 1500) {
+            this.comboCount++;
+        } else {
+            this.comboCount = 1; // Reset or start new
+        }
+        this.lastMergeTime = now;
+
+        // Show Combo Text
+        if (this.comboCount >= 2) {
+            this.showComboEffect(this.comboCount);
+            // Play combo sound if you had one, or pitch up pop sound
+            // For now, just reusing pop with slightly different handling if possible
+        }
+    }
+
+    showComboEffect(count) {
+        const container = document.getElementById('combo-container');
+        if (!container) return;
+
+        const el = document.createElement('div');
+        el.className = 'combo-text';
+        el.innerText = `${count} COMBO!`;
+
+        // Random position near center
+        const x = (this.actualWidth || CONFIG.CANVAS_WIDTH) / 2 + (Math.random() - 0.5) * 100;
+        const y = (this.actualHeight || CONFIG.CANVAS_HEIGHT) / 3 + (Math.random() - 0.5) * 50;
+
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+        el.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 20 - 10}deg)`;
+
+        container.appendChild(el);
+
+        // Remove after animation
+        setTimeout(() => el.remove(), 1000);
     }
 
     createWalls() {
@@ -276,6 +375,9 @@ export class Game {
         this.soundManager.playMerge(a.vegIndex);
         const score = VEGETABLES[a.vegIndex].score;
         this.scoreManager.addScore(score);
+
+        // Trigger Combo
+        this.triggerCombo();
 
         if (nextIdx < VEGETABLES.length) {
             const newVeg = createVegetable(midX, midY, nextIdx);

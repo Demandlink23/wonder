@@ -36,6 +36,7 @@
 
         <!-- NEW: Status Bar (Score & Next Preview) -->
         <div id="game-status-bar">
+            <!-- Left: Score -->
             <div class="status-left">
                 <div id="score-board">
                     <span>SCORE</span>
@@ -43,13 +44,19 @@
                 </div>
             </div>
 
+            <!-- Center: Mascot & Shake Skill -->
             <div class="status-center">
                 <div class="squid-mascot">
                     <img src="assets/squid.png" alt="Squid Mascot">
                 </div>
-                <span class="game-title">JIA's WORLD</span>
+                <!-- Shake Button -->
+                <button id="shake-btn" class="skill-btn" disabled>
+                    SHAKE!
+                    <div class="cooldown-overlay"></div>
+                </button>
             </div>
 
+            <!-- Right: Next Preview -->
             <div class="status-right">
                 <div class="next-label">NEXT</div>
                 <div id="next-preview-container">
@@ -57,6 +64,9 @@
                 </div>
             </div>
         </div>
+
+        <!-- Combo Effect Container -->
+        <div id="combo-container"></div>
 
         <canvas id="game-canvas"></canvas>
         <div id="ui-layer">
