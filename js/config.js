@@ -6,7 +6,7 @@ export const CONFIG = {
     BOUNCINESS: 0.1,
     GRAVITY_Y: -1,
     DANGER_LINE_Y: 650,
-    LAUNCHER_Y: 750,
+    LAUNCHER_Y: 720,  // Moved up from 750 for better visibility on tablets
 };
 
 // Stage definitions with difficulty
