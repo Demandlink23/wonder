@@ -16,6 +16,12 @@ body {
     /* Dark background */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow: hidden;
+
+    /* Mobile Safe Area Guard */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    box-sizing: border-box;
+    /* Padding is included in height */
 }
 
 #game-container {
