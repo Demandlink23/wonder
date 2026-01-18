@@ -21,58 +21,58 @@
                     <!-- Let's use JS to populate cleaner -->
                 </div>
             </div>
+        </div>
+        <!-- End of Evolution Header -->
 
-
-
-            <!-- NEW: Status Bar (Score & Next Preview) -->
-            <div id="game-status-bar">
-                <!-- Left: Score -->
-                <div class="status-left">
-                    <div id="score-board">
-                        <span>SCORE</span>
-                        <span id="score">0</span>
-                    </div>
-                </div>
-
-                <!-- Center: Title & Shake Skill -->
-                <div class="status-center">
-                    <span class="game-title">Wonder Pumpkin Game</span>
-                    <!-- Shake Button -->
-                    <button id="shake-btn" class="skill-btn" disabled>
-                        SHAKE!
-                        <div class="cooldown-overlay"></div>
-                    </button>
-                </div>
-
-                <!-- Right: Next Preview -->
-                <div class="status-right">
-                    <div class="next-label">NEXT</div>
-                    <div id="next-preview-container">
-                        <img id="next-veg-img" src="" alt="Next">
-                    </div>
+        <!-- NEW: Status Bar (Score & Next Preview) -->
+        <div id="game-status-bar">
+            <!-- Left: Score -->
+            <div class="status-left">
+                <div id="score-board">
+                    <span>SCORE</span>
+                    <span id="score">0</span>
                 </div>
             </div>
 
-            <!-- Combo Effect Container -->
-            <div id="combo-container"></div>
-
-            <div id="game-canvas-bg">
-                <img src="assets/squid.png" alt="Mascot Background">
+            <!-- Center: Title & Shake Skill -->
+            <div class="status-center">
+                <span class="game-title">Wonder Pumpkin Game</span>
+                <!-- Shake Button -->
+                <button id="shake-btn" class="skill-btn" disabled>
+                    SHAKE!
+                    <div class="cooldown-overlay"></div>
+                </button>
             </div>
 
-            <canvas id="game-canvas"></canvas>
-            <div id="ui-layer">
-                <!-- HUD moved to status bar, only Game Over remains overlay -->
-
-
-                <div id="game-over" class="hidden">
-                    <h1>Game Over</h1>
-                    <p>Vegetables overflowed!</p>
-                    <div class="score-summary">Final Score: <span id="final-score">0</span></div>
-                    <button id="restart-btn">Try Again</button>
+            <!-- Right: Next Preview -->
+            <div class="status-right">
+                <div class="next-label">NEXT</div>
+                <div id="next-preview-container">
+                    <img id="next-veg-img" src="" alt="Next">
                 </div>
             </div>
-            <script type="module" src="js/main.js"></script>
+        </div>
+
+        <!-- Combo Effect Container -->
+        <div id="combo-container"></div>
+
+        <div id="game-canvas-bg">
+            <img src="assets/squid.png" alt="Mascot Background">
+        </div>
+
+        <canvas id="game-canvas"></canvas>
+        <div id="ui-layer">
+            <!-- HUD moved to status bar, only Game Over remains overlay -->
+
+
+            <div id="game-over" class="hidden">
+                <h1>Game Over</h1>
+                <p>Vegetables overflowed!</p>
+                <div class="score-summary">Final Score: <span id="final-score">0</span></div>
+                <button id="restart-btn">Try Again</button>
+            </div>
+        </div>
+        <script type="module" src="js/main.js"></script>
 </body>
 
 </html>
