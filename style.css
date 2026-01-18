@@ -89,11 +89,13 @@ body {
 }
 
 .game-title {
-    font-size: 1.4em;
+    font-size: 1.1em;
+    /* Reduced from 1.4em */
     font-weight: bold;
     color: #fff8dc;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    letter-spacing: 2px;
+    letter-spacing: 1px;
+    /* Slightly reduced spacing too */
 }
 
 .evolution-guide {
