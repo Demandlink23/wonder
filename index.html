@@ -16,71 +16,62 @@
         <div id="evolution-header">
 
             <div class="evolution-guide">
-                <!-- Will be populated by JS or static HTML -->
-                <div class="evo-item"><img src="assets/corn.png"><span></span></div>
-                <div class="arrow">→</div>
-                <div class="evo-item"><img src="assets/bean.png"><span></span></div>
-                <div class="arrow">→</div>
-                <div class="evo-item"><img src="assets/chestnut.png"><span></span></div>
-                <div class="arrow">→</div>
-                <div class="evo-item"><img src="assets/eggplant.png"><span></span></div>
-                <div class="arrow">→</div>
-                <div class="evo-item"><img src="assets/carrot.png"><span></span></div>
-                <div class="arrow">→</div>
-                <!-- Show first 5 for space, or marquee? Let's fit them or scroll -->
-                <!-- Let's use JS to populate cleaner -->
-            </div>
-        </div>
-
-
-
-        <!-- NEW: Status Bar (Score & Next Preview) -->
-        <div id="game-status-bar">
-            <!-- Left: Score -->
-            <div class="status-left">
-                <div id="score-board">
-                    <span>SCORE</span>
-                    <span id="score">0</span>
+                <div id="evolution-bar">
+                    <!-- Show first 5 for space, or marquee? Let's fit them or scroll -->
+                    <!-- Let's use JS to populate cleaner -->
                 </div>
             </div>
 
-            <!-- Center: Mascot & Shake Skill -->
-            <div class="status-center">
-                <div class="squid-mascot">
-                    <img src="assets/squid.png" alt="Squid Mascot">
+
+
+            <!-- NEW: Status Bar (Score & Next Preview) -->
+            <div id="game-status-bar">
+                <!-- Left: Score -->
+                <div class="status-left">
+                    <div id="score-board">
+                        <span>SCORE</span>
+                        <span id="score">0</span>
+                    </div>
                 </div>
-                <!-- Shake Button -->
-                <button id="shake-btn" class="skill-btn" disabled>
-                    SHAKE!
-                    <div class="cooldown-overlay"></div>
-                </button>
-            </div>
 
-            <!-- Right: Next Preview -->
-            <div class="status-right">
-                <div class="next-label">NEXT</div>
-                <div id="next-preview-container">
-                    <img id="next-veg-img" src="" alt="Next">
+                <!-- Center: Mascot & Shake Skill -->
+                <div class="status-center">
+                    <div class="squid-mascot">
+                        <img src="assets/squid.png" alt="Squid Mascot">
+                    </div>
+                    <span class="game-title">Wonder Pumpkin Game</span>
+                    <!-- Shake Button -->
+                    <button id="shake-btn" class="skill-btn" disabled>
+                        SHAKE!
+                        <div class="cooldown-overlay"></div>
+                    </button>
+                </div>
+
+                <!-- Right: Next Preview -->
+                <div class="status-right">
+                    <div class="next-label">NEXT</div>
+                    <div id="next-preview-container">
+                        <img id="next-veg-img" src="" alt="Next">
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Combo Effect Container -->
-        <div id="combo-container"></div>
+            <!-- Combo Effect Container -->
+            <div id="combo-container"></div>
 
-        <canvas id="game-canvas"></canvas>
-        <div id="ui-layer">
-            <!-- HUD moved to status bar, only Game Over remains overlay -->
+            <canvas id="game-canvas"></canvas>
+            <div id="ui-layer">
+                <!-- HUD moved to status bar, only Game Over remains overlay -->
 
 
-            <div id="game-over" class="hidden">
-                <h1>Game Over</h1>
-                <p>Vegetables overflowed!</p>
-                <div class="score-summary">Final Score: <span id="final-score">0</span></div>
-                <button id="restart-btn">Try Again</button>
+                <div id="game-over" class="hidden">
+                    <h1>Game Over</h1>
+                    <p>Vegetables overflowed!</p>
+                    <div class="score-summary">Final Score: <span id="final-score">0</span></div>
+                    <button id="restart-btn">Try Again</button>
+                </div>
             </div>
-        </div>
-        <script type="module" src="js/main.js"></script>
+            <script type="module" src="js/main.js"></script>
 </body>
 
 </html>
