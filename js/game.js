@@ -584,9 +584,12 @@ export class Game {
         const bodies = Matter.Composite.allBodies(this.engine.world);
         const veggies = bodies.filter(b => b.vegIndex !== undefined);
 
-        const stage = STAGES[this.currentStage];
+        const h = this.actualHeight || CONFIG.CANVAS_HEIGHT;
+        const dangerY = h * 0.75; // Match afterRender logic
+
         for (const v of veggies) {
-            if (v.position.y > stage.dangerLineY && v.speed < 0.5) {
+            // Check if vegetable is below danger line (reversed gravity = larger Y is bottom)
+            if (v.position.y > dangerY && v.speed < 0.5) {
                 this.triggerGameOver();
                 break;
             }
